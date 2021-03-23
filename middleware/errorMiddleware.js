@@ -4,7 +4,6 @@ const notFound = (req, res, next) => {
   next(error);
 };
 
-//asyncHandler from npm will handle all the catch by using this errorHandler function
 const errorHandler = (err, req, res, next) => {
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
 
