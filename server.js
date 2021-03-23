@@ -21,14 +21,7 @@ app.get(
     const commentResponse = await fetch(COMMENTS_API_URL);
     const commentjson = await commentResponse.json();
     // Calculate the total_number_of_comments for each post
-    let numOfCommentsObj = commentjson.reduce(function (allPost, comment) {
-      if (comment['postId'] in allPost) {
-        allPost[comment['postId']]++;
-      } else {
-        allPost[comment['postId']] = 1;
-      }
-      return allPost;
-    }, {});
+    let numOfCommentsObj = calculateNumOfComments(commentjson);
 
     // Reformatting Array of Post Object
     let mappedPosts = postjson.map((post) => {
@@ -58,7 +51,6 @@ app.get(
     const commentResponse = await fetch(COMMENTS_API_URL);
     const commentjson = await commentResponse.json();
     let filteredComments = filterComments(commentjson, req.query);
-
     res.status(200).json(filteredComments);
   })
 );
