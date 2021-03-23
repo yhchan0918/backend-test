@@ -2,7 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import fetch from 'node-fetch';
 
-import { filterComments } from './utils/commentsFilters.js';
+import { filterComments, calculateNumOfComments } from './utils/index.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
