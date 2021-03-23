@@ -6,8 +6,6 @@ import { filterComments, calculateNumOfComments } from './utils/index.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
-
-app.use(express.json()); // It parses incoming requests with JSON payloads and is based on body-parser.
 const POSTS_API_URL = 'https://jsonplaceholder.typicode.com/posts';
 const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
 
