@@ -1,7 +1,8 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-
 import fetch from 'node-fetch';
+
+import { filterComments } from './utils/commentsFilters.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json()); // It parses incoming requests with JSON payloads and is based on body-parser.
 const POSTS_API_URL = 'https://jsonplaceholder.typicode.com/posts';
 const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
+
 // @desc    Return a list of top posts ordered by the number of comment
 // @route   GET /post
 app.get(
@@ -53,56 +55,11 @@ app.get(
 app.get(
   '/comments',
   asyncHandler(async (req, res) => {
-    const { postId, id, name, email, body } = req.query;
     const commentResponse = await fetch(COMMENTS_API_URL);
     const commentjson = await commentResponse.json();
-    let filteredComments;
-    if (postId) {
-      filteredComments = commentjson.filter(postIdFilter);
-    }
-    if (id) {
-      filteredComments = filteredComments.filter(idFilter);
-    }
-    if (name) {
-      filteredComments = filteredComments.filter(nameFilter);
-    }
+    let filteredComments = filterComments(commentjson, req.query);
 
-    if (email) {
-      filteredComments = filteredComments.filter(emailFilter);
-    }
-    if (body) {
-      filteredComments = filteredComments.filter(bodyFilter);
-    }
-
-    const postIdFilter = (comment) => {
-      const postIdInInt = parseInt(postId);
-      return postIdInInt === comment.postId;
-    };
-    const idFilter = (comment) => {
-      const IdInInt = parseInt(id);
-      return IdInInt === comment.id;
-    };
-
-    const nameFilter = (comment) => {
-      let searchRegex = new RegExp(name, 'i');
-      const isFound = comment.name.search(searchRegex);
-
-      return isFound === -1 ? false : true;
-    };
-    const emailFilter = (comment) => {
-      let searchRegex = new RegExp(email, 'i');
-      const isFound = comment.email.search(searchRegex);
-
-      return isFound === -1 ? false : true;
-    };
-    const bodyFilter = (comment) => {
-      let searchRegex = new RegExp(body, 'i');
-      const isFound = comment.body.search(searchRegex);
-
-      return isFound === -1 ? false : true;
-    };
-
-    res.status(200).json(comments);
+    res.status(200).json(filteredComments);
   })
 );
 
