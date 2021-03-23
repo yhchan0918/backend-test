@@ -1,8 +1,8 @@
 const filterComments = (comments, query) => {
   const { postId, id, name, email, body } = query;
-  let filteredComments;
+  let filteredComments = comments;
   if (postId) {
-    filteredComments = comments.filter((comment) => {
+    filteredComments = filteredComments.filter((comment) => {
       const postIdInInt = parseInt(postId);
       return postIdInInt === comment.postId;
     });
