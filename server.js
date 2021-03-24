@@ -14,10 +14,15 @@ const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
 app.get(
   '/posts',
   asyncHandler(async (req, res) => {
-    const postResponse = await fetch(POSTS_API_URL);
-    const postjson = await postResponse.json();
-    const commentResponse = await fetch(COMMENTS_API_URL);
-    const commentjson = await commentResponse.json();
+    const [postResponse, commentResponse] = await Promise.all([
+      fetch(POSTS_API_URL),
+      fetch(COMMENTS_API_URL),
+    ]);
+    const [postjson, commentjson] = await Promise.all([
+      postResponse.json(),
+      commentResponse.json(),
+    ]);
+
     // Calculate the total_number_of_comments for each post
     let numOfCommentsObj = calculateNumOfComments(commentjson);
 
